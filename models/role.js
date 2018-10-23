@@ -1,39 +1,24 @@
 "use strict";
 
-var crypto = require('crypto');
-
 module.exports = (sequelize, DataTypes) => {
-    let User = sequelize.define('User', {
+    let Role = sequelize.define('Role', {
         id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             allowNull: false,
             primaryKey: true
         },
-        email: {
+        nombre: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        password: {
-            type: DataTypes.STRING,
+        description: {
+            type: DataTypes.TEXT,
             allowNull: false,
-        },
-        firstName: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        lastName: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        // default values for dates => current time
-        birthday: {
-            type: DataTypes.DATE,
-            allowNull: false
-        },
+        }
     }, {
             // don't add the timestamp attributes (updatedAt, createdAt)
-            timestamps: true,
+            timestamps: false,
 
             // don't use camelcase for automatically added attributes but underscore style
             // so updatedAt will be updated_at
@@ -45,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
             freezeTableName: false,
 
             // define the table's name
-            tableName: 'user',
+            tableName: 'role',
 
             // Enable optimistic locking.  When enabled, sequelize will add a version count attribute
             // to the model and throw an OptimisticLockingError error when stale instances are saved.
@@ -53,14 +38,13 @@ module.exports = (sequelize, DataTypes) => {
             version: false
         });
 
-    User.associate = models => {
+    Role.associate = models => {
         //asociar los roles
-        User.belongsToMany(models.Role, {
-            as: 'Roles',
+        Role.belongsToMany(models.User, {
             through: 'user_role',
-            foreignKey: 'user'
+            foreignKey: 'role'
         });
     };
 
-    return User;
+    return Role;
 };
